@@ -1,9 +1,9 @@
-package prog2;
+package proj2;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class MyProgramUtility {
     public static void main(String[] args) {
@@ -15,12 +15,12 @@ public class MyProgramUtility {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
+    }//end of main method
 
     public void run() throws Exception {
         List<Citizen> citizens = readDataFileIntoList("data.csv");
         citizens.forEach(System.out::println);
-    }
+    }//end of run
 
     private List<Citizen> readDataFileIntoList(String filename) {
         try {
@@ -43,8 +43,19 @@ public class MyProgramUtility {
             e.printStackTrace();
             throw new RuntimeException();
         }
-    }
-    
+    }//end of readDataFileIntoList
+
+    public void showPopulationPerDistrict(List<Citizen> citizens){
+        System.out.println("List of districts and corresponding number of citizens");
+        Map<Integer, List<Citizen>> districtInfo = citizens.stream().collect(Collectors.groupingBy(Citizen::getDistrict));
+        Set<Integer> districts = districtInfo.keySet();
+        for (Integer district : districts){
+            List<Citizen> cit = districtInfo.get(district);
+            int total = cit.size();
+            System.out.printf("District %s: %d%n", district, total);
+        }
+    }//end of method
+
     public void showFiveYoungestCitizensAccordingToGender(List<Citizen> citizens) {
         System.out.println("Five youngest citizens according to gender:");
         Comparator<Citizen> comparator = (cit1, cit2) -> {
@@ -69,5 +80,19 @@ public class MyProgramUtility {
                 .limit(5)
                 .forEach(System.out::println);
         System.out.println("=======================================================================================\n");
-        }
-}
+    }//end of method
+
+    public void showListOfSeniorCitizenInDescendingOrder(List<Citizen> citizens){
+        System.out.println("List of senior citizens in descending order:");
+        Comparator<Citizen> comparator = (cit1, cit2) -> {
+            if (cit1.getAge() > cit2.getAge()){
+                return -1;
+            } else if (cit1.getAge() < cit2.getAge()) {
+                return 1;
+            } else {
+                return 0;
+            }
+        };
+        citizens.stream().filter(cit -> cit.getAge() > 59).sorted(comparator).forEach(System.out::println);
+    }//end of method
+}//end of class
