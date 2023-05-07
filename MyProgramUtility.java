@@ -44,4 +44,30 @@ public class MyProgramUtility {
             throw new RuntimeException();
         }
     }
+    
+    public void showFiveYoungestCitizensAccordingToGender(List<Citizen> citizens) {
+        System.out.println("Five youngest citizens according to gender:");
+        Comparator<Citizen> comparator = (cit1, cit2) -> {
+            if (cit1.getAge() > cit2.getAge()) {
+                return 1;
+            } else if (cit1.getAge() < cit2.getAge()) {
+                return -1;
+            } else {
+                return 0;
+            }
+        };
+        System.out.println("Male");
+        citizens
+                .stream()
+                .filter(cit -> cit.getGender() == 'M').sorted(comparator)
+                .limit(5)
+                .forEach(System.out::println);
+        System.out.println("\nFemale");
+        citizens
+                .stream()
+                .filter(cit -> cit.getGender() == 'F').sorted(comparator)
+                .limit(5)
+                .forEach(System.out::println);
+        System.out.println("=======================================================================================\n");
+        }
 }
