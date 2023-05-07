@@ -44,6 +44,22 @@ public class MyProgramUtility {
             throw new RuntimeException();
         }
     }//end of readDataFileIntoList
+    
+     public void showPopulationPerDistrictResidentOrNot(List<Citizen> citizens){
+        System.out.println(" Population per district and resident status: ");
+        Map<Integer, Map<Boolean , List<Citizen>>> districtInfo=citizens.stream().collect(Collectors.groupingBy(Citizen::getDistrict,Collectors.groupingBy(Citizen::isResident)));
+        Set<Integer> districts= districtInfo.keySet();
+        for (Integer district : districts){
+            System.out.printf("District %d : %n", district);
+            Map<Boolean, List<Citizen>> residents= districtInfo.get(district);
+            Set<Boolean> isResident= residents.keySet();
+            for (Boolean status : isResident){
+                List<Citizen> cit = residents.get(status);
+                int total = cit.size();
+                System.out.printf(" %s : %d%n" , (status? "Resident" : "Not Resident" ) , total );
+            }
+        }
+    } // end of showPopulationPerDistrictResidentOrNot method
 
     public void showPopulationPerDistrict(List<Citizen> citizens){
         System.out.println("List of districts and corresponding number of citizens");
