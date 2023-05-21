@@ -22,28 +22,42 @@ public class MyProgramUtility {
         citizens.forEach(System.out::println);
     }//end of run
 
-    private List<Citizen> readDataFileIntoList(String filename) {
-        try {
-            List<Citizen> citizens = new ArrayList<>();
-            BufferedReader reader = new BufferedReader(new FileReader(filename));
-            while (true) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
-                String[] data = line.split(",");
-                boolean resident = data[5].equalsIgnoreCase("resident");
-                Citizen cit = new Citizen(data[0], data[1], data[2], data[3], Integer.parseInt(data[4]), resident,
-                        Integer.parseInt(data[6]), data[7].charAt(0));
-                citizens.add(cit);
+    private List<Citizen> readDataFileIntoList(String filename) throws IOException {
+
+        List<Citizen> citizens = new ArrayList();
+        BufferedReader reader = new BufferedReader(new FileReader("data.csv"));
+
+        while(true) {
+            String line = reader.readLine();
+            if (line == null) {
+                break;
             }
-            reader.close();
-            return citizens;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException();
+
+            String[] data = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+
+            String strContent = data[3];
+            String strPattern = "\"([^\"]*)\"";
+            String addressPOBox = "";
+
+            if (strContent.charAt(0) == '\"') {
+                Pattern pattern = Pattern.compile(strPattern);
+                Matcher matcher = pattern.matcher(strContent);
+                while (matcher.find()) {
+                    addressPOBox = matcher.group(1);
+                }
+            } else {
+                addressPOBox = strContent;
+            }
+
+            Citizen citizen = new Citizen(data[0], data[1], data[2], data[3], Integer.parseInt(data[4]), Boolean.parseBoolean(data[5]), Integer.parseInt(data[6]), data[7].charAt(0));
+            citizens.add(citizen);
+
         }
-    }//end of readDataFileIntoList
+        reader.close();
+        return citizens;
+
+    } // end of Read Data File Into List
+    
     
      public void showPopulationPerDistrictResidentOrNot(List<Citizen> citizens){
         System.out.println(" Population per district and resident status: ");
